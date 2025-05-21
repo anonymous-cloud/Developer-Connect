@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const signup = async(req,res)=>{
     try {
-        const {name,email,password} = req.body;
+        const {name,email,password,role} = req.body;
         const exitingUser = await User.findOne({email});
 
         if(exitingUser){
@@ -20,7 +20,7 @@ const signup = async(req,res)=>{
         const hasedPassword = await bcrypt.hash(password,saltRounds)
 
 
-      const newUser = new User({name,email,password : hasedPassword});
+      const newUser = new User({name,email,password : hasedPassword,role});
 
       await newUser.save();
 
@@ -49,7 +49,13 @@ const login = async (req,res)=>{
             return res.status(400).json({message : "invalid credentials"});
         }
 
-        const token = jwt.sign({id:dataUser._id},JWT_SECRET,{expiresIn : "24h"});
+           const token = jwt.sign(
+                   { id: dataUser._id, role: dataUser.role },
+                     JWT_SECRET,
+                    { expiresIn: "24h" }
+);
+
+
 
         res.status(200).json({message : "login successful", token})
     }catch(err){
