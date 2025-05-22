@@ -2,11 +2,11 @@ const Article = require("../models/Article");
 
 const createArticle = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content ,author } = req.body;
     const article = await Article.create({ 
         title, 
         content,
-        //author: req.user._id
+        author: req.user._id
      });
     res.status(201).json({ success: true, data: article });
   } catch (error) {
