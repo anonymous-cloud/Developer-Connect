@@ -1,14 +1,22 @@
 const express = require("express");
-const connectDB = require('./config/db'); 
-const router = require("./routes/authRoutes")
-const bodyParser = require('body-parser');
+const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes"); // ✅ You forgot to import this in your original code
+const articleRoutes = require("./routes/articleRoutes");
+const bodyParser = require("body-parser");
 
-const app = express()
+const app = express();
+
+// Connect to DB
 connectDB();
 
+// Middleware
 app.use(bodyParser.json());
-app.use("/",router)
+app.use(express.json());
 
-app.listen("3000",()=>{
-    console.log("server  is sussesfully listening to port number 3000")
+// Routes
+app.use("/api/auth", authRoutes);         // ✅ /api/auth/signup or /api/auth/login
+app.use("/api/articles", articleRoutes);  // ✅ /api/articles/review-articles, etc.
+
+app.listen(3000, () => {
+  console.log("✅ Server is successfully listening on port 3000");
 });
