@@ -1,6 +1,10 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/sendEmail");
+const Subject = require("../models/Subject");
+const { text } = require("body-parser");
+
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -20,15 +24,24 @@ const signup = async(req,res)=>{
         const hasedPassword = await bcrypt.hash(password,saltRounds)
 
 
-      const newUser = new User({name,email,password : hasedPassword,role});
-
+      const newUser = new User({name,email : email.toLowerCase(),password : hasedPassword,role : role || user});
+        
+      await sendEmail({
+        to : req.body.email,
+        Subject : "Welcome to Developer connect 🚀",
+        text : `Hi ${newUser.name},welcome to our platform. We're excited to have you!`,
+      });
       await newUser.save();
 
 
-      res.status(201).json({message : "user created sussesfully"});
-
+res.status(201).json({
+      success: true,
+      message: "User created & email sent",
+      data: newUser,
+    });
 
     }catch(err){
+        console.error("Email send error:", err)
         res.status(500).json({error : err.message});
     }
 };
@@ -62,6 +75,7 @@ const login = async (req,res)=>{
         console.log(err)
         return res.status(500).json({err : err.message});
     }
+    
 };
 
 
