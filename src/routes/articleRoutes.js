@@ -1,9 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const articleController = require("../controllers/articleController");
-//const { authenticate } = require("../middleware/authMiddleware");
+const { 
+  createArticle,
+  getArticleById,
+  getArticlesBySubject
+} = require("../controllers/articleController");
 
-router.get("/", articleController.getAllArticles);
-router.post("/", articleController.createArticle);
+// Create article
+router.post("/", createArticle);
+
+// Get article by ID
+router.get("/:id", getArticleById);
+
+// Get articles by subject ID
+router.get("/subject/:subjectId", getArticlesBySubject);
 
 module.exports = router;
