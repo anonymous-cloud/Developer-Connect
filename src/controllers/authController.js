@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/sendEmail");
 const Subject = require("../models/Subject");
 const { text } = require("body-parser");
+const path = require("path");
+
 
 require("dotenv").config();
 
@@ -29,8 +31,12 @@ const signup = async(req,res)=>{
       await sendEmail({
         to : req.body.email,
         Subject : "Welcome to Developer connect 🚀",
-        text : `Hi ${newUser.name},welcome to our platform. We're excited to have you!`,
-      });
+       // text : `Hi ${newUser.name},welcome to our platform. We're excited to have you!`,
+        templatePath : path.join(__dirname, "..","./templates/welcomeEmail.html"), 
+         templateData: {
+    name: name
+  }
+    });      
       await newUser.save();
 
 

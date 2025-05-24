@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const fs = require("fs");
+const handlebars = require("handlebars");
 
 const sendemail = async(options) =>{
   console.log(options)
@@ -9,6 +11,12 @@ const sendemail = async(options) =>{
             pass: process.env.EMAIL_PASS, 
          },
     });
+     let htmlContent = "";
+    if (options.templatePath) {
+    const source = fs.readFileSync(options.templatePath, "utf8");
+    const compiled = handlebars.compile(source);
+    htmlContent = compiled(options.templateData);
+  }
 
     const  mailOptions = {
           from : "hello.test.nodemail@gmail.com",
